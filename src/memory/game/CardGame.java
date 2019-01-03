@@ -45,6 +45,9 @@ public class CardGame {
     }
 
     private void checkPair() {
+        if(revealedCards.size() <= 1)
+            return;
+
         var pair = revealedCards.get(0).getPair();
         var isSame = revealedCards.stream().allMatch(c -> c.getPair() == pair);
 

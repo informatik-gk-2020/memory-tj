@@ -44,6 +44,9 @@ public class Main extends Application {
     }
 
     private ToolBar createToolbar(Stage stage) {
+        var newGameButton = new Button("Neues Spiel");
+        newGameButton.setOnAction(event -> game.reset());
+
         var launchpadButton = new Button("Launchpad");
         launchpadButton.setOnAction(event -> {
             var dialog = new LaunchpadSelectionDialog();
@@ -53,6 +56,6 @@ public class Main extends Application {
                     .ifPresent(buttonType -> dialog.apply(launchpad));
         });
 
-        return new ToolBar(launchpadButton);
+        return new ToolBar(newGameButton, launchpadButton);
     }
 }
