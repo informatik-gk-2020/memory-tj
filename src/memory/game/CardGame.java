@@ -27,6 +27,8 @@ public class CardGame {
 
     private final ReadOnlyObjectWrapper<Player> currentPlayer = new ReadOnlyObjectWrapper<>();
 
+    private final ArrayList<GameListener> gameListeners = new ArrayList<>();
+
     public ObservableList<Card> getCards() {
         return cards;
     }
@@ -45,19 +47,24 @@ public class CardGame {
     }
 
     private void checkPair() {
-        if(revealedCards.size() <= 1)
+        if (revealedCards.size() <= 1)
             return;
 
         var pair = revealedCards.get(0).getPair();
         var isSame = revealedCards.stream().allMatch(c -> c.getPair() == pair);
+        var currentPlayer = getCurrentPlayer();
 
         if (isSame) {
-            getCurrentPlayer().incrementScore();
+            currentPlayer.incrementScore();
         } else {
             for (var i : revealedCards) {
                 i.setRevealed(false);
             }
             nextPlayer();
+        }
+
+        for (var listener : gameListeners) {
+            listener.revealResult(currentPlayer, revealedCards, isSame);
         }
 
         revealedCards.clear();
@@ -69,6 +76,10 @@ public class CardGame {
     }
 
     public void reset() {
+        for (var listener : gameListeners) {
+            listener.resetGame();
+        }
+
         var newCards = Arrays.stream(colors)
                 .flatMap(color -> {
                     var pair = new Pair(color);
@@ -109,6 +120,14 @@ public class CardGame {
 
     private void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer.set(currentPlayer);
+    }
+
+    public void addGameListener(GameListener listener) {
+        gameListeners.add(listener);
+    }
+
+    public void removeGameListener(GameListener listener) {
+        gameListeners.remove(listener);
     }
 
     private static final Color[] colors = {
