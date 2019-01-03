@@ -15,5 +15,8 @@ public class GameView extends BorderPane {
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(8));
         setCenter(grid);
+
+        setLeft(new PlayerView(game, game.getPlayer1(), "Spieler 1"));
+        setRight(new PlayerView(game, game.getPlayer2(), "Spieler 2"));
     }
 }
