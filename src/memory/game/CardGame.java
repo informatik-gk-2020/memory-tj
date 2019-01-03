@@ -122,6 +122,14 @@ public class CardGame {
         this.currentPlayer.set(currentPlayer);
     }
 
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public Player getPlayer2() {
+        return player2;
+    }
+
     public void addGameListener(GameListener listener) {
         gameListeners.add(listener);
     }
