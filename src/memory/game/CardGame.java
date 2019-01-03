@@ -21,6 +21,7 @@ public class CardGame {
     private final ReadOnlyBooleanWrapper canRevealCards = new ReadOnlyBooleanWrapper();
 
     private final ArrayList<Card> revealedCards = new ArrayList<>();
+    private final ArrayList<Card> cardsToReveal = new ArrayList<>();
 
     private final Player player1 = new Player();
     private final Player player2 = new Player();
@@ -56,6 +57,12 @@ public class CardGame {
 
         if (isSame) {
             currentPlayer.incrementScore();
+            cardsToReveal.removeAll(revealedCards);
+
+            if (cardsToReveal.isEmpty()) { // the player has won the game
+                gameEnded(getCurrentPlayer());
+                return;
+            }
         } else {
             for (var i : revealedCards) {
                 i.setRevealed(false);
@@ -67,8 +74,16 @@ public class CardGame {
             listener.revealResult(currentPlayer, revealedCards, isSame);
         }
 
-        revealedCards.clear();
         setCanRevealCards(true);
+        revealedCards.clear();
+    }
+
+    private void gameEnded(Player winner) {
+        setCanRevealCards(false);
+
+        for (var listener : gameListeners) {
+            listener.gameEnded(winner);
+        }
     }
 
     private void nextPlayer() {
@@ -92,6 +107,9 @@ public class CardGame {
         cards.setAll(newCards);
         canRevealCards.set(true);
         revealedCards.clear();
+
+        cardsToReveal.clear();
+        cardsToReveal.addAll(cards);
 
         player1.reset();
         player2.reset();

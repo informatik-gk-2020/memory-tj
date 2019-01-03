@@ -58,9 +58,4 @@ public class PlayerView extends VBox implements GameListener {
             scoreAnimation.playFromStart();
         }
     }
-
-    @Override
-    public void resetGame() {
-
-    }
 }
